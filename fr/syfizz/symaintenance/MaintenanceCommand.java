@@ -149,36 +149,43 @@ public class MaintenanceCommand implements CommandExecutor {
                         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.COMMAND_NO_PERM.getMessage()));
                     }
                 } else if (args[0].equalsIgnoreCase("schedule")){
-
-                    final int delay = Integer.parseInt(args[1]);
-                    SyMaintenance.DELAY_BEFORE_MAINTENANCE = delay;
-                    if(!SyMaintenance.SCHEDULED) {
-                        if(!SyMaintenance.ENABLED) {
-                            new ScheduledMaintenanceRunnable(delay).runTaskTimer(main, 0L, 20L);
-                            SyMaintenance.SCHEDULED = true;
-                            if(SyMaintenance.BROADCASTS_ENABLED) {
-                                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Messages.MAINTENANCE_SCHEDULED_BROADCAST_MESSAGE.getMessage()).replace("%s", delay + "&e&lsecondes"));
+                    if(sender.isOp()) {
+                        final int delay = Integer.parseInt(args[1]);
+                        SyMaintenance.DELAY_BEFORE_MAINTENANCE = delay;
+                        if (!SyMaintenance.SCHEDULED) {
+                            if (!SyMaintenance.ENABLED) {
+                                new ScheduledMaintenanceRunnable(delay).runTaskTimer(main, 0L, 20L);
+                                SyMaintenance.SCHEDULED = true;
+                                if (SyMaintenance.BROADCASTS_ENABLED) {
+                                    Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', Messages.MAINTENANCE_SCHEDULED_BROADCAST_MESSAGE.getMessage()).replace("%s", delay + "&e&lsecondes"));
+                                }
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.MAINTENANCE_SUCCESSFULLY_SCHEDULED.getMessage().replace("%s", Integer.toString(delay))));
+                            } else {
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.MAINTENANCE_ALREADY_ENABLED.getMessage()));
                             }
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.MAINTENANCE_SUCCESSFULLY_SCHEDULED.getMessage().replace("%s", Integer.toString(delay))));
                         } else {
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.MAINTENANCE_ALREADY_ENABLED.getMessage()));
+                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.MAINTENANCE_ALREADY_SCHEDULED.getMessage()));
                         }
                     } else {
-                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.MAINTENANCE_ALREADY_SCHEDULED.getMessage()));
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.COMMAND_NO_PERM.getMessage()));
                     }
                 } else if (args[0].equalsIgnoreCase("duration")){
-                    if(!SyMaintenance.SCHEDULED) {
-                        if (!SyMaintenance.ENABLED) {
-                            final int duration = Integer.parseInt(args[1]);
-                            SyMaintenance.MAINTENANCE_DURATION = duration;
-                            new MaintenanceDurationRunnable(duration).runTaskTimer(main, 0L, 20L);
-                            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "maintenance on");
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.MAINTENANCE_SUCCESSFULLY_ENABLED_DURATION.getMessage().replace("%s", Integer.toString(duration))));
+                    if(sender.isOp()) {
+                        if (!SyMaintenance.SCHEDULED) {
+                            if (!SyMaintenance.ENABLED) {
+                                final int duration = Integer.parseInt(args[1]);
+                                SyMaintenance.MAINTENANCE_DURATION = duration;
+                                new MaintenanceDurationRunnable(duration).runTaskTimer(main, 0L, 20L);
+                                Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), "maintenance on");
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.MAINTENANCE_SUCCESSFULLY_ENABLED_DURATION.getMessage().replace("%s", Integer.toString(duration))));
+                            } else {
+                                sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.MAINTENANCE_ALREADY_ENABLED.getMessage()));
+                            }
                         } else {
-                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.MAINTENANCE_ALREADY_ENABLED.getMessage()));
+                            sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.MAINTENANCE_ALREADY_SCHEDULED.getMessage()));
                         }
                     } else {
-                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.MAINTENANCE_ALREADY_SCHEDULED.getMessage()));
+                        sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.COMMAND_NO_PERM.getMessage()));
                     }
                 } else {
                     sender.sendMessage(ChatColor.translateAlternateColorCodes('&', Messages.COMMAND_WRONG_ARGS.getMessage()));
