@@ -1,0 +1,8 @@
+name: SyMaintenance
+author: SyFizz_
+version: 0.0.1
+main: fr.syfizz.symaintenance.SyMaintenance
+commands:
+  maintenance:
+    description: Switch maintenance state
+    usage: /maintenance [on | off | add | remove | list | schedule | duration] [online player | time in seconds]
